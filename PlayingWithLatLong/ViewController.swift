@@ -16,10 +16,13 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var altitude: UILabel!
     @IBOutlet weak var speed: UILabel!
     var locationManager: CLLocationManager?
+    var startLocation: CLLocation?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
+        
+        locationGetter()
     }
 
     override func didReceiveMemoryWarning() {
@@ -31,6 +34,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         locationManager = CLLocationManager()
         locationManager?.delegate = self
         locationManager?.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager?.requestWhenInUseAuthorization()
         locationManager?.startUpdatingLocation()
     }
     
@@ -49,5 +53,15 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         longitude.text = String(format: "%.8f", currentLocation.coordinate.longitude)
         altitude.text = String(format: "%.0f m", currentLocation.altitude)
         speed.text = String(format: "%.1f m/s", currentLocation.speed)
+    }
+    
+    func isLocationAuthorized() -> Bool {
+        let authorizationStatus = CLLocationManager.authorizationStatus()
+        if (authorizationStatus == CLAuthorizationStatus.authorizedAlways || authorizationStatus == CLAuthorizationStatus.authorizedWhenInUse) {
+            return true
+        }
+        else {
+            return false
+        }
     }
 }
