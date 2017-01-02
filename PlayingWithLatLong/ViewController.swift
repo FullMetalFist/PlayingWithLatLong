@@ -9,20 +9,25 @@
 import UIKit
 import CoreLocation
 
-class ViewController: UIViewController, CLLocationManagerDelegate {
+class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, CLLocationManagerDelegate {
     
     @IBOutlet weak var latitude: UILabel!
     @IBOutlet weak var longitude: UILabel!
     @IBOutlet weak var altitude: UILabel!
     @IBOutlet weak var speed: UILabel!
+    
+    @IBOutlet weak var exitPicker: UIPickerView!
+    
     var locationManager: CLLocationManager?
-    var startLocation: CLLocation?
+    let exitType = ["Stair", "Easement", "Elevator", "Escalator", "Door"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         
         locationGetter()
+        exitPicker.delegate = self
+        exitPicker.dataSource = self
     }
 
     override func didReceiveMemoryWarning() {
@@ -37,6 +42,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         locationManager?.requestWhenInUseAuthorization()
         locationManager?.startUpdatingLocation()
     }
+    
+    // MARK: CoreLocationDelegate Methods
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         let errorAlert: UIAlertController = UIAlertController(title: "Error!", message: "There is a problem: \(error)", preferredStyle: .alert)
@@ -64,4 +71,20 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             return false
         }
     }
+    // MARK: PickerViewDataSource Methods
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return 5
+    }
+    // MARK: PickerViewDelegate Methods
+    
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        
+        return exitType[row]
+    }
+    
+    
 }
